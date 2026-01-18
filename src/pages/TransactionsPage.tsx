@@ -4,12 +4,9 @@ import { useFinance } from '../context/FinanceContext';
 import { TransactionTable } from '../components/dashboard/TransactionTable';
 
 export function TransactionsPage() {
-    const { transactions, members } = useFinance();
+    const { transactions, members, categories } = useFinance();
 
-    // Extract unique categories from transactions
-    const categories = Array.from(new Set(
-        transactions.map(tx => typeof tx.category === 'string' ? tx.category : tx.category.name)
-    )).map((name: string) => ({ id: name, name }));
+    // No need to extract categories - already available from useFinance
 
     // Local filter state (separate from global filters)
     const [localFilters, setLocalFilters] = useState({
@@ -25,9 +22,8 @@ export function TransactionsPage() {
         if (localFilters.search && !tx.description.toLowerCase().includes(localFilters.search.toLowerCase())) {
             return false;
         }
-        if (localFilters.category !== 'all') {
-            const txCategory = typeof tx.category === 'string' ? tx.category : tx.category.name;
-            if (txCategory !== localFilters.category) return false;
+        if (localFilters.category !== 'all' && tx.categoryId !== localFilters.category) {
+            return false;
         }
         if (localFilters.member !== 'all' && tx.memberId !== localFilters.member) {
             return false;
@@ -43,11 +39,11 @@ export function TransactionsPage() {
 
     // Calculate summary stats
     const totalIncome = filteredTransactions
-        .filter(tx => tx.type === 'income')
+        .filter(tx => tx.type === 'INCOME')
         .reduce((sum, tx) => sum + tx.amount, 0);
 
     const totalExpense = filteredTransactions
-        .filter(tx => tx.type === 'expense')
+        .filter(tx => tx.type === 'EXPENSE')
         .reduce((sum, tx) => sum + tx.amount, 0);
 
     const difference = totalIncome - totalExpense;
@@ -122,8 +118,8 @@ export function TransactionsPage() {
                             className="w-full px-4 py-2.5 rounded-xl border border-brand-gray-200 bg-brand-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-lime transition-all"
                         >
                             <option value="all">Todas as Categorias</option>
-                            {categories.map((cat: { id: string; name: string }) => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
                     </div>
@@ -182,14 +178,14 @@ export function TransactionsPage() {
                     <p className="text-sm text-brand-gray-500 mb-1">Total de Receitas</p>
                     <p className="text-2xl font-bold text-green-600">{formatCurrency(totalIncome)}</p>
                     <p className="text-xs text-brand-gray-400 mt-1">
-                        {filteredTransactions.filter(tx => tx.type === 'income').length} transações
+                        {filteredTransactions.filter(tx => tx.type === 'INCOME').length} transações
                     </p>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-brand-gray-100 shadow-sm">
                     <p className="text-sm text-brand-gray-500 mb-1">Total de Despesas</p>
                     <p className="text-2xl font-bold text-red-600">{formatCurrency(totalExpense)}</p>
                     <p className="text-xs text-brand-gray-400 mt-1">
-                        {filteredTransactions.filter(tx => tx.type === 'expense').length} transações
+                        {filteredTransactions.filter(tx => tx.type === 'EXPENSE').length} transações
                     </p>
                 </div>
                 <div className="bg-white p-6 rounded-2xl border border-brand-gray-100 shadow-sm">
