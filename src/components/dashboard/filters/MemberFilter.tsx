@@ -39,7 +39,7 @@ export function MemberFilter() {
                         title={member.name}
                     >
                         <img
-                            src={member.avatarUrl}
+                            src={member.avatarUrl || undefined}
                             alt={member.name}
                             className="w-full h-full rounded-full object-cover"
                         />

@@ -1,11 +1,14 @@
 import type { Transaction } from '../../types';
 import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { useFinance } from '../../context/FinanceContext';
 
 interface TransactionListProps {
     transactions: Transaction[];
 }
 
 export function TransactionList({ transactions }: TransactionListProps) {
+    const { categories } = useFinance();
+
     return (
         <div className="bg-white rounded-xl border border-brand-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
             <div className="p-4 border-b border-brand-gray-100 flex justify-between items-center">
@@ -31,7 +34,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                                 <tr key={tx.id} className="hover:bg-brand-gray-50 transition-colors">
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">
-                                            {tx.type === 'income' ? (
+                                            {tx.type === 'INCOME' ? (
                                                 <ArrowUpCircle size={18} className="text-green-500 shrink-0" />
                                             ) : (
                                                 <ArrowDownCircle size={18} className="text-red-500 shrink-0" />
@@ -41,8 +44,8 @@ export function TransactionList({ transactions }: TransactionListProps) {
                                             </span>
                                         </div>
                                     </td>
-                                    <td className={`px-4 py-3 text-right font-semibold ${tx.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                                        {tx.type === 'expense' ? '-' : '+'}
+                                    <td className={`px-4 py-3 text-right font-semibold ${tx.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
+                                        {tx.type === 'EXPENSE' ? '-' : '+'}
                                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(tx.amount)}
                                     </td>
                                     <td className="px-4 py-3 text-sm text-brand-gray-500 hidden md:table-cell">
@@ -50,7 +53,7 @@ export function TransactionList({ transactions }: TransactionListProps) {
                                     </td>
                                     <td className="px-4 py-3 text-sm text-brand-gray-500 hidden sm:table-cell">
                                         <span className="inline-block px-2 py-1 rounded-full bg-brand-gray-200 text-xs font-medium">
-                                            {typeof tx.category === 'string' ? tx.category : tx.category.name}
+                                            {categories.find(c => c.id === tx.categoryId)?.name || 'Sem categoria'}
                                         </span>
                                     </td>
                                 </tr>

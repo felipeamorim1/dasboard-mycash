@@ -39,19 +39,9 @@ export function MemberModal() {
                 name,
                 role,
                 avatarUrl: finalAvatar,
-                // income: Number(income) || 0 // Assuming FamilyMember type might need update if we want to store income, 
-                // but for now the prompt just says "Avatar Name Role and Income". 
-                // Let's check FamilyMember type. It only has { id, name, role, avatarUrl }.
-                // Prompt 18 says "Campos: ... Renda.". 
-                // If the type doesn't support it, I should update the type or just ignore for now in the object creation 
-                // if it's just for "show" in this modal but valid for later.
-                // I'll update the type in a separate step or just implicitly handle it. 
-                // Let's assume for now I will just add properties matching existing type + maybe extension?
-                // The prompt says "Add to array familyMembers". 
-                // UseFinance context has `members: FamilyMember[]`.
-                // I'll stick to the existing type for safety unless I see the type file update task.
-                // Wait, if I don't store Income, where does it go? 
-                // I'll assume for now `FamilyMember` needs `income` optional field.
+                monthlyIncome: Number(income) || 0,
+                color: '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'),
+                isActive: true
             });
 
             setToast({ message: 'Membro adicionado!', type: 'success' });

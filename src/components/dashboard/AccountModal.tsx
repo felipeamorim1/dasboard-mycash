@@ -6,7 +6,7 @@ import { Toast } from '../ui/Toast';
 
 export function AccountModal() {
     const { isAccountModalOpen, closeAccountModal } = useLayout();
-    const { addAccount, addCard, members } = useFinance();
+    const { addAccount, members } = useFinance();
 
     // Type Toggle
     const [type, setType] = useState<'account' | 'card'>('account');
@@ -24,7 +24,7 @@ export function AccountModal() {
     const [limit, setLimit] = useState('');
     const [closingDay, setClosingDay] = useState('');
     const [dueDay, setDueDay] = useState('');
-    const [brand] = useState<'visa' | 'mastercard' | 'amex' | 'elo'>('visa'); // Logic to select brand can be added later
+
 
     // UI State
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -59,22 +59,37 @@ export function AccountModal() {
         try {
             if (type === 'account') {
                 addAccount({
-                    bankName,
-                    accountType: 'checking', // Default for now
+                    name,
+                    type: 'CHECKING',
+                    bank: bankName,
+                    lastDigits: null,
+                    holderId: ownerId,
                     balance: Number(balance),
+                    creditLimit: null,
+                    currentBill: 0,
+                    closingDay: null,
+                    dueDay: null,
                     color,
-                    icon: 'wallet', // Default
+                    theme: null,
+                    logoUrl: null,
+                    isActive: true
                 });
             } else {
-                addCard({
+                addAccount({
                     name,
-                    brand, // Default or selected
-                    limit: Number(limit),
-                    currentBill: 0, // Starts at 0
-                    dueDate: Number(dueDay),
-                    closingDate: Number(closingDay),
-                    last4Digits: Math.floor(1000 + Math.random() * 9000).toString(), // Mock last 4
+                    type: 'CREDIT_CARD',
+                    bank: 'Emissor',
+                    lastDigits: Math.floor(1000 + Math.random() * 9000).toString(),
+                    holderId: ownerId,
+                    balance: 0,
+                    creditLimit: Number(limit),
+                    currentBill: 0,
+                    closingDay: Number(closingDay),
+                    dueDay: Number(dueDay),
                     color,
+                    theme: null,
+                    logoUrl: null,
+                    isActive: true
                 });
             }
 

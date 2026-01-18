@@ -12,11 +12,11 @@ export function CardDetailsModal() {
     if (!card) return null;
 
     // Filter transactions for this card
-    const cardTransactions = transactions.filter(t => t.cardId === card.id && t.type === 'expense');
+    const cardTransactions = transactions.filter(t => t.accountId === card.id && t.type === 'EXPENSE');
 
     // Calculate metrics
-    const usagePercentage = Math.round((card.currentBill / card.limit) * 100);
-    const available = card.limit - card.currentBill;
+    const usagePercentage = Math.round((card.currentBill / (card.creditLimit || 1)) * 100);
+    const available = (card.creditLimit || 0) - card.currentBill;
 
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('pt-BR', {
@@ -60,7 +60,7 @@ export function CardDetailsModal() {
                             <div>
                                 <h2 className="text-xl font-bold">{card.name}</h2>
                                 <p className={`text-sm ${card.color === '#000000' ? 'text-gray-400' : 'text-gray-600'}`}>
-                                    **** {card.last4Digits}
+                                    **** {card.lastDigits || '0000'}
                                 </p>
                             </div>
                         </div>
@@ -76,7 +76,7 @@ export function CardDetailsModal() {
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
                             <p className={`text-xs ${card.color === '#000000' ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Limite Total</p>
-                            <p className="text-lg font-bold">{formatCurrency(card.limit)}</p>
+                            <p className="text-lg font-bold">{formatCurrency(card.creditLimit || 0)}</p>
                         </div>
                         <div>
                             <p className={`text-xs ${card.color === '#000000' ? 'text-gray-400' : 'text-gray-600'} mb-1`}>Fatura Atual</p>
@@ -98,11 +98,11 @@ export function CardDetailsModal() {
                     <div className="flex gap-4 text-xs mb-3">
                         <div className="flex items-center gap-1">
                             <Calendar size={14} />
-                            <span>Fecha dia {card.closingDate}</span>
+                            <span>Fecha dia {card.closingDay || '-'}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Calendar size={14} />
-                            <span>Vence dia {card.dueDate}</span>
+                            <span>Vence dia {card.dueDay || '-'}</span>
                         </div>
                     </div>
 
@@ -136,9 +136,9 @@ export function CardDetailsModal() {
                                             <p className="font-bold text-brand-black">{tx.description}</p>
                                             <div className="flex gap-2 items-center mt-1">
                                                 <span className="text-xs text-text-secondary">{formatDate(tx.date)}</span>
-                                                {tx.installments && (
+                                                {tx.totalInstallments && tx.totalInstallments > 1 && (
                                                     <span className="text-xs bg-brand-gray-100 px-2 py-0.5 rounded-full text-brand-black font-medium">
-                                                        {tx.installments}
+                                                        {tx.installmentNumber}/{tx.totalInstallments}x
                                                     </span>
                                                 )}
                                             </div>

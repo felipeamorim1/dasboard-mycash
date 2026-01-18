@@ -92,7 +92,7 @@ export function MobileFilterModal() {
                                     `}
                                 >
                                     <img
-                                        src={member.avatarUrl}
+                                        src={member.avatarUrl || undefined}
                                         alt={member.name}
                                         className="w-5 h-5 rounded-full"
                                     />

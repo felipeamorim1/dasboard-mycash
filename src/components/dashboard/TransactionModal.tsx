@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Check } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { useLayout } from '../../context/LayoutContext';
+import type { TransactionType } from '../../types';
 import { Toast } from '../ui/Toast';
 
 export function TransactionModal() {
@@ -10,7 +11,7 @@ export function TransactionModal() {
 
     const [description, setDescription] = useState('');
     const [amount, setAmount] = useState('');
-    const [type, setType] = useState<'income' | 'expense'>('expense');
+    const [type, setType] = useState<TransactionType>('EXPENSE');
     const [category, setCategory] = useState('');
     const [isCustomCategory, setIsCustomCategory] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState('');
@@ -50,12 +51,16 @@ export function TransactionModal() {
                 amount: Number(amount),
                 type,
                 date: new Date(date).toISOString(),
-                category: category,
-                accountId: !isCreditCard ? selectedAccount : undefined,
-                cardId: isCreditCard ? selectedAccount : undefined,
-                status: 'completed',
-                installments: isCreditCard && type === 'expense' ? installments : undefined,
-                isRecurring: !isCreditCard && type === 'expense' && isRecurring
+                categoryId: category,
+                accountId: selectedAccount,
+                memberId: null,
+                status: 'COMPLETED',
+                installmentNumber: isCreditCard && type === 'EXPENSE' ? (installments ? parseInt(installments) : 1) : null,
+                totalInstallments: isCreditCard && type === 'EXPENSE' && installments ? parseInt(installments) : 1,
+                isRecurring: !isCreditCard && type === 'EXPENSE' && isRecurring,
+                parentTransactionId: null,
+                recurringTransactionId: null,
+                notes: null
             });
 
             setToast({ message: 'Transação salva com sucesso!', type: 'success' });
@@ -72,7 +77,7 @@ export function TransactionModal() {
     const handleClose = () => {
         setDescription('');
         setAmount('');
-        setType('expense');
+        setType('EXPENSE');
         setCategory('');
         setSelectedAccount('');
         setInstallments('');
@@ -109,15 +114,15 @@ export function TransactionModal() {
                             <div className="flex p-1 bg-brand-gray-100 rounded-lg">
                                 <button
                                     type="button"
-                                    onClick={() => setType('expense')}
-                                    className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${type === 'expense' ? 'bg-white shadow text-red-600' : 'text-brand-gray-500'}`}
+                                    onClick={() => setType('EXPENSE')}
+                                    className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${type === 'EXPENSE' ? 'bg-white shadow text-red-600' : 'text-brand-gray-500'}`}
                                 >
                                     Despesa
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setType('income')}
-                                    className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${type === 'income' ? 'bg-white shadow text-green-600' : 'text-brand-gray-500'}`}
+                                    onClick={() => setType('INCOME')}
+                                    className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${type === 'INCOME' ? 'bg-white shadow text-green-600' : 'text-brand-gray-500'}`}
                                 >
                                     Receita
                                 </button>
@@ -206,17 +211,14 @@ export function TransactionModal() {
                                 >
                                     <option value="">Selecione...</option>
                                     <optgroup label="Contas">
-                                        {accounts.map(acc => <option key={acc.id} value={acc.id}>{acc.bankName} - {acc.accountType}</option>)}
-                                    </optgroup>
-                                    <optgroup label="Cartões de Crédito">
-                                        {creditCards.map(card => <option key={card.id} value={card.id}>{card.name}</option>)}
+                                        {accounts.map(acc => <option key={acc.id} value={acc.id}>{acc.name} ({acc.type})</option>)}
                                     </optgroup>
                                 </select>
                                 {errors.account && <p className="text-xs text-red-500 mt-1">{errors.account}</p>}
                             </div>
 
                             {/* Installments (Credit Card Only) */}
-                            {isCreditCard && type === 'expense' && (
+                            {isCreditCard && type === 'EXPENSE' && (
                                 <div className="animate-slide-up">
                                     <label className="block text-xs font-bold text-brand-gray-500 uppercase mb-1">Parcelas</label>
                                     <select
@@ -233,7 +235,7 @@ export function TransactionModal() {
                             )}
 
                             {/* Recurring (Account Only) */}
-                            {!isCreditCard && type === 'expense' && (
+                            {!isCreditCard && type === 'EXPENSE' && (
                                 <div className="flex items-center gap-3 p-3 bg-brand-gray-50 rounded-xl border border-brand-gray-200 animate-slide-up cursor-pointer" onClick={() => setIsRecurring(!isRecurring)}>
                                     <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isRecurring ? 'bg-brand-lime border-brand-lime' : 'border-brand-gray-400 bg-white'}`}>
                                         {isRecurring && <Check size={14} className="text-brand-black" />}

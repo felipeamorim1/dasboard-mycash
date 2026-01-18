@@ -68,7 +68,7 @@ export function DashboardHeader() {
                                     aria-label={`Filtrar por ${member.name}`}
                                     aria-pressed={filters.selectedMember === member.id}
                                 >
-                                    <img src={member.avatarUrl} alt="" className="w-full h-full object-cover rounded-full" aria-hidden="true" />
+                                    <img src={member.avatarUrl || undefined} alt="" className="w-full h-full object-cover rounded-full" aria-hidden="true" />
                                     <span className="sr-only">{member.name}</span>
                                 </button>
                             ))}

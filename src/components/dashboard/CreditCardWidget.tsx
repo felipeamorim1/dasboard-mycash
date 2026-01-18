@@ -1,15 +1,16 @@
 import { CreditCard as CardIcon } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { useLayout } from '../../context/LayoutContext';
-import type { CreditCard } from '../../types';
+import type { Account } from '../../types';
 
 interface CardItemProps {
-    card: CreditCard;
+    card: Account;
     onClick: () => void;
 }
 
 function CardItem({ card, onClick }: CardItemProps) {
-    const usagePercentage = Math.round((card.currentBill / card.limit) * 100);
+    const limit = card.creditLimit || 1;
+    const usagePercentage = Math.round((card.currentBill / limit) * 100);
 
     // Theme Logic based on card color mock (Simplified for prompt requirements)
     // In a real app, this would be more robust. 
@@ -49,7 +50,7 @@ function CardItem({ card, onClick }: CardItemProps) {
                     <div>
                         <p className="font-bold text-sm">{card.name}</p>
                         <p className={`text-xs ${card.color === '#000000' ? 'text-gray-400' : 'text-gray-500'}`}>
-                            **** {card.last4Digits}
+                            **** {card.lastDigits}
                         </p>
                     </div>
                 </div>
