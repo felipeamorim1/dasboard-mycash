@@ -15,7 +15,7 @@ interface TransactionTableProps {
 }
 
 export function TransactionTable({ overrideTransactions }: TransactionTableProps) {
-    const { filteredTransactions, members, accounts, creditCards } = useFinance();
+    const { filteredTransactions, members, accounts, categories } = useFinance();
 
     // Use override if provided, otherwise use filtered
     const transactions = overrideTransactions || filteredTransactions;
@@ -49,13 +49,13 @@ export function TransactionTable({ overrideTransactions }: TransactionTableProps
     const getAccountName = (tx: Transaction) => {
         if (tx.accountId) {
             const acc = accounts.find(a => a.id === tx.accountId);
-            return { name: acc?.bankName || 'Conta', icon: Wallet };
+            if (acc) {
+                // Unified Account: can be CHECKING, SAVINGS, or CREDIT_CARD
+                const icon = acc.type === 'CREDIT_CARD' ? CreditCard : Wallet;
+                return { name: acc.name || acc.bank, icon };
+            }
         }
-        if (tx.cardId) {
-            const card = creditCards.find(c => c.id === tx.cardId);
-            return { name: card?.name || 'Cartão', icon: CreditCard };
-        }
-        // Fallback based on type logic or random for mock
+        // Fallback
         return { name: 'Carteira', icon: Wallet };
     };
 
@@ -108,7 +108,7 @@ export function TransactionTable({ overrideTransactions }: TransactionTableProps
                         {currentTransactions.length > 0 ? (
                             currentTransactions.map((tx, index) => {
                                 const accountInfo = getAccountName(tx);
-                                const isIncome = tx.type === 'income';
+                                const isIncome = tx.type === 'INCOME';
                                 const CategoryBadgeColor = isIncome ? 'bg-green-100 text-green-700' : 'bg-red-50 text-red-700';
 
                                 return (
@@ -122,7 +122,7 @@ export function TransactionTable({ overrideTransactions }: TransactionTableProps
                                     >
                                         <td className="px-6 py-4">
                                             <img
-                                                src={getMemberAvatar(tx.memberId)}
+                                                src={getMemberAvatar(tx.memberId ?? undefined)}
                                                 alt="Avatar"
                                                 className="w-8 h-8 rounded-full border border-brand-gray-200"
                                             />
@@ -142,7 +142,7 @@ export function TransactionTable({ overrideTransactions }: TransactionTableProps
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-bold ${CategoryBadgeColor}`}>
-                                                {typeof tx.category === 'string' ? tx.category : tx.category.name}
+                                                {categories.find(c => c.id === tx.categoryId)?.name || 'Sem categoria'}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-brand-gray-600">
@@ -152,7 +152,7 @@ export function TransactionTable({ overrideTransactions }: TransactionTableProps
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-center text-brand-gray-500">
-                                            {tx.installments || '-'}
+                                            {tx.installmentNumber ? `${tx.installmentNumber}/${tx.totalInstallments}` : '-'}
                                         </td>
                                         <td className={`px-6 py-4 text-right font-bold ${isIncome ? 'text-green-600' : 'text-red-600'}`}>
                                             {isIncome ? '+' : '-'} {formatCurrency(tx.amount)}

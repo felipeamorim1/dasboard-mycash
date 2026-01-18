@@ -4,7 +4,19 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Database interface (can be generated automatically later)
+// ============================================
+// 🔧 ENUMS
+// ============================================
+
+export type TransactionType = 'INCOME' | 'EXPENSE';
+export type AccountType = 'CHECKING' | 'SAVINGS' | 'CREDIT_CARD';
+export type RecurrenceFrequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+export type TransactionStatus = 'PENDING' | 'COMPLETED';
+
+// ============================================
+// 📊 DATABASE INTERFACE
+// ============================================
+
 export type Json =
     | string
     | number
@@ -16,36 +28,327 @@ export type Json =
 export interface Database {
     public: {
         Tables: {
-            transactions: {
+            users: {
                 Row: {
                     id: string
+                    email: string
+                    name: string
+                    avatar_url: string | null
                     created_at: string
-                    description: string
-                    amount: number
-                    type: 'income' | 'expense'
-                    category: string
-                    balance_after: number
-                    date: string
+                    updated_at: string
                 }
                 Insert: {
                     id?: string
+                    email: string
+                    name: string
+                    avatar_url?: string | null
                     created_at?: string
-                    description: string
-                    amount: number
-                    type: 'income' | 'expense'
-                    category: string
-                    balance_after?: number
-                    date: string
+                    updated_at?: string
                 }
                 Update: {
                     id?: string
+                    email?: string
+                    name?: string
+                    avatar_url?: string | null
                     created_at?: string
-                    description?: string
+                    updated_at?: string
+                }
+            }
+            family_members: {
+                Row: {
+                    id: string
+                    user_id: string
+                    name: string
+                    role: string
+                    avatar_url: string | null
+                    monthly_income: number
+                    color: string
+                    is_active: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    name: string
+                    role: string
+                    avatar_url?: string | null
+                    monthly_income?: number
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    name?: string
+                    role?: string
+                    avatar_url?: string | null
+                    monthly_income?: number
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            categories: {
+                Row: {
+                    id: string
+                    user_id: string
+                    name: string
+                    icon: string
+                    type: TransactionType
+                    color: string
+                    is_active: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    name: string
+                    icon?: string
+                    type: TransactionType
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    name?: string
+                    icon?: string
+                    type?: TransactionType
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            accounts: {
+                Row: {
+                    id: string
+                    user_id: string
+                    type: AccountType
+                    name: string
+                    bank: string
+                    last_digits: string | null
+                    holder_id: string
+                    balance: number
+                    credit_limit: number | null
+                    current_bill: number
+                    due_day: number | null
+                    closing_day: number | null
+                    theme: string | null
+                    logo_url: string | null
+                    color: string
+                    is_active: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    type: AccountType
+                    name: string
+                    bank: string
+                    last_digits?: string | null
+                    holder_id: string
+                    balance?: number
+                    credit_limit?: number | null
+                    current_bill?: number
+                    due_day?: number | null
+                    closing_day?: number | null
+                    theme?: string | null
+                    logo_url?: string | null
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    type?: AccountType
+                    name?: string
+                    bank?: string
+                    last_digits?: string | null
+                    holder_id?: string
+                    balance?: number
+                    credit_limit?: number | null
+                    current_bill?: number
+                    due_day?: number | null
+                    closing_day?: number | null
+                    theme?: string | null
+                    logo_url?: string | null
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            transactions: {
+                Row: {
+                    id: string
+                    user_id: string
+                    type: TransactionType
+                    amount: number
+                    description: string
+                    date: string
+                    category_id: string | null
+                    account_id: string | null
+                    member_id: string | null
+                    installment_number: number | null
+                    total_installments: number
+                    parent_transaction_id: string | null
+                    is_recurring: boolean
+                    recurring_transaction_id: string | null
+                    status: TransactionStatus
+                    notes: string | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    type: TransactionType
+                    amount: number
+                    description: string
+                    date: string
+                    category_id?: string | null
+                    account_id?: string | null
+                    member_id?: string | null
+                    installment_number?: number | null
+                    total_installments?: number
+                    parent_transaction_id?: string | null
+                    is_recurring?: boolean
+                    recurring_transaction_id?: string | null
+                    status?: TransactionStatus
+                    notes?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    type?: TransactionType
                     amount?: number
-                    type?: 'income' | 'expense'
-                    category?: string
-                    balance_after?: number
+                    description?: string
                     date?: string
+                    category_id?: string | null
+                    account_id?: string | null
+                    member_id?: string | null
+                    installment_number?: number | null
+                    total_installments?: number
+                    parent_transaction_id?: string | null
+                    is_recurring?: boolean
+                    recurring_transaction_id?: string | null
+                    status?: TransactionStatus
+                    notes?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            recurring_transactions: {
+                Row: {
+                    id: string
+                    user_id: string
+                    type: TransactionType
+                    amount: number
+                    description: string
+                    category_id: string | null
+                    account_id: string | null
+                    member_id: string | null
+                    frequency: RecurrenceFrequency
+                    day_of_month: number | null
+                    day_of_week: number | null
+                    start_date: string
+                    end_date: string | null
+                    is_active: boolean
+                    notes: string | null
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    type?: TransactionType
+                    amount: number
+                    description: string
+                    category_id?: string | null
+                    account_id?: string | null
+                    member_id?: string | null
+                    frequency: RecurrenceFrequency
+                    day_of_month?: number | null
+                    day_of_week?: number | null
+                    start_date: string
+                    end_date?: string | null
+                    is_active?: boolean
+                    notes?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    type?: TransactionType
+                    amount?: number
+                    description?: string
+                    category_id?: string | null
+                    account_id?: string | null
+                    member_id?: string | null
+                    frequency?: RecurrenceFrequency
+                    day_of_month?: number | null
+                    day_of_week?: number | null
+                    start_date?: string
+                    end_date?: string | null
+                    is_active?: boolean
+                    notes?: string | null
+                    created_at?: string
+                    updated_at?: string
+                }
+            }
+            goals: {
+                Row: {
+                    id: string
+                    user_id: string
+                    name: string
+                    target_amount: number
+                    current_amount: number
+                    deadline: string
+                    icon: string
+                    color: string
+                    is_active: boolean
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    id?: string
+                    user_id: string
+                    name: string
+                    target_amount: number
+                    current_amount?: number
+                    deadline: string
+                    icon?: string
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: {
+                    id?: string
+                    user_id?: string
+                    name?: string
+                    target_amount?: number
+                    current_amount?: number
+                    deadline?: string
+                    icon?: string
+                    color?: string
+                    is_active?: boolean
+                    created_at?: string
+                    updated_at?: string
                 }
             }
         }
@@ -57,5 +360,5 @@ if (!supabaseUrl || !supabaseAnonKey) {
     console.error('⚠️ Supabase URL or Anon Key is missing. Check your .env file.');
 }
 
-// Create Supabase client
+// Create Supabase client with full type safety
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);

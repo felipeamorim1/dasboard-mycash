@@ -13,6 +13,7 @@ function AnimatedRoutes() {
     <div key={location.pathname} className="animate-fade-in">
       <Routes location={location}>
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/cards" element={<CardsPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/profile" element={<ProfilePage />} />

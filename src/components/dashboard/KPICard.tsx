@@ -23,34 +23,35 @@ export function KPICard({ title, value, icon: Icon, variant = 'default', trend }
     const isPrimary = variant === 'primary';
 
     return (
-        <div
+        <article
             className={`
-                p-6 rounded-card border shadow-sm flex flex-col justify-between h-32 md:h-40 relative overflow-hidden group transition-all duration-300
+                p-6 lg:p-8 rounded-card border shadow-card flex flex-col justify-between min-h-[160px] md:min-h-[180px] relative overflow-hidden group transition-all duration-300
                 ${isPrimary
-                    ? 'bg-brand-black border-brand-black text-text-inverse hover:shadow-brand-lime/20 hover:shadow-lg'
-                    : 'bg-ui-card border-ui-border text-text-primary hover:border-brand-gray-300 hover:shadow-md'}
+                    ? 'bg-brand-black border-brand-black text-text-inverse hover:shadow-card-hover'
+                    : 'bg-ui-card border-ui-border text-text-primary hover:border-ui-border-dark hover:shadow-card-hover'}
             `}
         >
             {/* Header */}
             <div className="flex justify-between items-start z-10">
-                <span className={`font-medium text-sm ${isPrimary ? 'text-brand-gray-400' : 'text-text-secondary'}`}>
+                <span className={`font-semibold text-sm md:text-base ${isPrimary ? 'text-brand-gray-300' : 'text-text-secondary'}`}>
                     {title}
                 </span>
                 <div
                     className={`
-                        p-2 rounded-full transition-transform duration-300 group-hover:scale-110
+                        p-2.5 rounded-full transition-transform duration-300 group-hover:scale-110
                         ${isPrimary ? 'bg-brand-lime text-brand-black' : 'bg-brand-gray-100 text-brand-black'}
                     `}
+                    aria-hidden="true"
                 >
-                    <Icon size={20} strokeWidth={2.5} />
+                    <Icon size={22} strokeWidth={2.5} />
                 </div>
             </div>
 
             {/* Value & Trend */}
             <div className="z-10">
-                <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-1">
+                <p className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-1">
                     {formattedValue}
-                </h3>
+                </p>
 
                 {trend && (
                     <div className="flex items-center gap-1.5">
@@ -64,7 +65,7 @@ export function KPICard({ title, value, icon: Icon, variant = 'default', trend }
                         >
                             {trend.isPositive ? '+' : ''}{trend.value}%
                         </span>
-                        <span className={`text-xs ${isPrimary ? 'text-brand-gray-500' : 'text-text-secondary'}`}>
+                        <span className={`text-xs md:text-sm ${isPrimary ? 'text-brand-gray-300' : 'text-text-secondary'}`}>
                             vs. mês anterior
                         </span>
                     </div>
@@ -79,6 +80,6 @@ export function KPICard({ title, value, icon: Icon, variant = 'default', trend }
             {!isPrimary && (
                 <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-brand-gray-100 rounded-full opacity-50 blur-xl group-hover:scale-110 transition-transform duration-500 pointer-events-none" />
             )}
-        </div>
+        </article>
     );
 }

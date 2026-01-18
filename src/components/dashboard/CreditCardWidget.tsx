@@ -80,9 +80,14 @@ export function CreditCardWidget() {
 
     return (
         <div className="bg-brand-gray-50 p-6 rounded-card h-full flex flex-col">
-            <h2 className="text-lg font-bold text-text-primary mb-4 flex items-center justify-between">
+            <h2 className="text-lg md:text-xl font-bold text-text-primary mb-4 flex items-center justify-between">
                 Meus Cartões
-                <button className="text-sm text-brand-lime font-bold hover:underline">Ver todos</button>
+                <button
+                    className="text-sm font-bold text-text-lime-accessible hover:text-text-primary hover:underline touch-target"
+                    aria-label="Ver todos os cartões"
+                >
+                    Ver todos
+                </button>
             </h2>
 
             <div className="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar flex-1">
