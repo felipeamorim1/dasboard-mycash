@@ -14,7 +14,7 @@ export function ProfilePage() {
         name: 'Usuário Principal',
         role: 'admin' as const,
         avatarUrl: 'https://ui-avatars.com/api/?name=User&background=CCFF00&color=000',
-        income: 5000
+        monthlyIncome: 5000
     };
 
     const formatCurrency = (value: number) => {
@@ -76,7 +76,7 @@ export function ProfilePage() {
                             {/* Avatar */}
                             <div className="relative">
                                 <img
-                                    src={currentUser.avatarUrl}
+                                    src={currentUser.avatarUrl || 'https://ui-avatars.com/api/?name=User&background=random'}
                                     alt={currentUser.name}
                                     className="w-32 h-32 rounded-full border-4 border-brand-lime shadow-lg"
                                 />
@@ -97,10 +97,10 @@ export function ProfilePage() {
                                     `}>
                                         {currentUser.role === 'admin' ? 'Administrador' : 'Membro'}
                                     </span>
-                                    {currentUser.income && (
+                                    {currentUser.monthlyIncome && (
                                         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-green-50 text-green-700 rounded-full text-sm font-bold">
                                             <DollarSign size={16} />
-                                            {formatCurrency(currentUser.income)} / mês
+                                            {formatCurrency(currentUser.monthlyIncome)} / mês
                                         </div>
                                     )}
                                 </div>
@@ -131,7 +131,7 @@ export function ProfilePage() {
                                 >
                                     <div className="flex items-center gap-4">
                                         <img
-                                            src={member.avatarUrl}
+                                            src={member.avatarUrl || 'https://ui-avatars.com/api/?name=User&background=random'}
                                             alt={member.name}
                                             className="w-14 h-14 rounded-full border-2 border-brand-gray-200 group-hover:border-brand-lime transition-colors"
                                         />
@@ -146,9 +146,9 @@ export function ProfilePage() {
                                                 `}>
                                                     {member.role === 'admin' ? 'Admin' : 'Membro'}
                                                 </span>
-                                                {member.income && (
+                                                {member.monthlyIncome && (
                                                     <span className="text-xs text-green-600 font-medium">
-                                                        {formatCurrency(member.income)}/mês
+                                                        {formatCurrency(member.monthlyIncome)}/mês
                                                     </span>
                                                 )}
                                             </div>
