@@ -119,7 +119,13 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
                 supabase.from('categories').select('*').eq('user_id', TEMP_USER_ID).order('name', { ascending: true }),
                 supabase.from('transactions').select('*').eq('user_id', TEMP_USER_ID).order('date', { ascending: false }),
                 supabase.from('goals').select('*').eq('user_id', TEMP_USER_ID).eq('is_active', true)
-            ]);
+            ]) as [
+                    { data: any[] | null; error: any },
+                    { data: any[] | null; error: any },
+                    { data: any[] | null; error: any },
+                    { data: any[] | null; error: any },
+                    { data: any[] | null; error: any }
+                ];
 
             // Check for errors
             if (membersError) throw new Error(`Members: ${membersError.message}`);
