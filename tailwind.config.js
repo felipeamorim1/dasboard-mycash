@@ -24,8 +24,20 @@ export default {
                 'red-danger': '#EF4444',
 
                 // --- SEMANTICS (Contextual Usage - ANTIGRAVITY) ---
-                'brand-lime': '#CCFF00', // Alias for backward compatibility / explicit brand use
+                'brand-lime': '#CCFF00', // Primary brand color
                 'brand-black': '#000000',
+
+                // Brand Gray Scale (Complete spectrum for UI)
+                'brand-gray-50': '#F9FAFB',
+                'brand-gray-100': '#F3F4F6',
+                'brand-gray-200': '#E5E7EB',
+                'brand-gray-300': '#D1D5DB',
+                'brand-gray-400': '#9CA3AF',
+                'brand-gray-500': '#6B7280',
+                'brand-gray-600': '#4B5563',
+                'brand-gray-700': '#374151',
+                'brand-gray-800': '#1F2937',
+                'brand-gray-900': '#111827',
 
                 // UI Semantics
                 'ui-bg': '#F9FAFB',        // Main background
