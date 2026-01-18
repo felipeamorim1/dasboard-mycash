@@ -1,8 +1,9 @@
+/* Import animations FIRST (PostCSS requirement) */
+@import './styles/animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './styles/animations.css';
 
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
